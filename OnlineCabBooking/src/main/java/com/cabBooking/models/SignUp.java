@@ -26,11 +26,11 @@ public class SignUp {
 
 
 	@NotNull
-	@Pattern(regexp="[a-z]{6,12}", message = "Username must be between 6 to 12 characters. Must only contain lowercase characters.")
+	@Pattern(regexp="[a-z]{3,12}", message = "Username must be between 6 to 12 characters. Must only contain lowercase characters.")
 	private String userName;
 
 	@NotNull
-	@Pattern(regexp="[a-zA-Z0-9]{6,12}",message="Password must contain between 6 to 12 characters. Must be alphanumeric with both Upper and lowercase characters.")
+	@Pattern(regexp="[a-zA-Z0-9]{6,18}",message="Password must contain between 6 to 12 characters. Must be alphanumeric with both Upper and lowercase characters.")
 	private String password;
 
 	@NotNull
@@ -40,5 +40,13 @@ public class SignUp {
 	@Email
 	@NotNull
 	private String email;
+	
+//	{
+//
+//		"userName":"kapilkumar",
+//		"password":"Kapil123",
+//		"mobileNo":9992382395,
+//		"email":"kapil@gmail.com"
+//		}
 
 }
