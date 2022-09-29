@@ -46,6 +46,7 @@
 		</attributes>
 	</classpathentry>
 
+
 	<classpathentry kind="src" path=".apt_generated">
 		<attributes>
 			<attribute name="optional" value="true"/>
