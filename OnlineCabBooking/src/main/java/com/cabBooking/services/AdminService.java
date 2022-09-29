@@ -9,7 +9,7 @@ public interface AdminService {
 
 	public Admin update(Admin admin, String Username, String password)  throws AdminException;
 
-	public Admin deleteAdmin(Integer Admin)  throws AdminException;
+	public Admin deleteAdmin(Integer AdminId)  throws AdminException;
 
 	public List<TripBooking> getAllTrips(Integer customerId) throws TripBookingException;
 	
