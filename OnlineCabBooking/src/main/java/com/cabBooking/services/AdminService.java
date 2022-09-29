@@ -11,17 +11,17 @@ public interface AdminService {
 
 	public Admin deleteAdmin(Integer AdminId)  throws AdminException;
 
-	public List<TripBooking> getAllTrips(Integer customerId) throws TripBookingException;
+	public List<TripBookingService> getAllTrips(Integer customerId) throws TripBookingException;
 	
-	public List<TripBooking> getTripsCabwise()  throws TripBookingException;
+	public List<TripBookingService> getTripsCabwise()  throws TripBookingException;
 	
-	public List<TripBooking> getTripsCustomerwise()  throws TripBookingException;
+	public List<TripBookingService> getTripsCustomerwise()  throws TripBookingException;
 	
 	
-	public List<TripBooking> getTripsDatewise()  throws TripBookingException;
+	public List<TripBookingService> getTripsDatewise()  throws TripBookingException;
 	
 
-	public List<TripBooking> getAllTripsForDays(Integer customerId,LocalDateTime fromDate,LocalDateTime toDate) throws TripBookingException;
+	public List<TripBookingService> getAllTripsForDays(Integer customerId,LocalDateTime fromDate,LocalDateTime toDate) throws TripBookingException;
 	
 	
 	
