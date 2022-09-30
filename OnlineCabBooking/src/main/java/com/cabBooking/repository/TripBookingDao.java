@@ -1,5 +1,6 @@
 package com.cabBooking.repository;
 
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,4 +26,5 @@ public interface TripBookingDao extends JpaRepository<TripBooking, Integer>{
 	
 	@Query("select t from TripBooking t where t.customer.getCustomerId= ?1 and t.fromDateTime=?2 and t.toDateTime=?3")
 	public List<TripBooking> getAllTripBetweenDate(Integer customerId, LocalDateTime fromDate, LocalDateTime toDate);
+
 }
