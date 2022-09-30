@@ -21,7 +21,7 @@ public class CurrentUserSessionServiceImpl implements CurrentUserSessionService 
 	private SignUpDAO signUpDAO;
 	
 	@Override
-	public CurrentUserSession getCurrentUserSession(String key) {
+	public CurrentUserSession getCurrentUserSession(String key) throws LoginException {
 		
 		Optional<CurrentUserSession> currentUser = currentUserSessionDAO.findByUuid(key);
 		if(!currentUser.isPresent())

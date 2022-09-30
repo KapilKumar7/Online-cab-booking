@@ -7,12 +7,13 @@ import org.springframework.stereotype.Service;
 
 import com.cabBooking.exceptions.TripBookingException;
 import com.cabBooking.models.TripBooking;
+import com.cabBooking.repository.TripBookingDao;
 
 @Service
 public class TripBookingServiceImpl implements TripBookingService{
 
 	@Autowired
-	private TripBookingServiceDao tripDao;
+	private TripBookingDao tripDao;
 	
 	@Autowired
 	private CustomerService customerService;
@@ -22,7 +23,7 @@ public class TripBookingServiceImpl implements TripBookingService{
 	@Override
 	public TripBooking insertTripBooking(TripBooking tripBooking) throws TripBookingException {
 		
-		tripDao.save(tripBooking);
+		return tripDao.save(tripBooking);
 	}
 
 	@Override
