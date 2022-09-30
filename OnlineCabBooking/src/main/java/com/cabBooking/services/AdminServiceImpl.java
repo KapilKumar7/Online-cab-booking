@@ -13,8 +13,10 @@ import com.cabBooking.exceptions.AdminException;
 import com.cabBooking.exceptions.TripBookingException;
 import com.cabBooking.repository.AdminDao;
 import com.cabBooking.repository.AdminSessionDao;
+import com.cabBooking.repository.CurrentUserSessionDAO;
 import com.cabBooking.repository.TripBookingDao;
 import com.cabBooking.models.Admin;
+import com.cabBooking.models.CurrentUserSession;
 import com.cabBooking.models.TripBooking;
 
 @Service
@@ -22,6 +24,9 @@ public class AdminServiceImpl implements AdminService{
 
 	@Autowired
 	private AdminDao admindao;
+	
+	@Autowired 
+	private CurrentUserSessionDAO sessionDAO;
 	
 	@Autowired
 	private TripBookingDao bookingDao;
@@ -43,13 +48,22 @@ public class AdminServiceImpl implements AdminService{
 
 	@Override
 	public Admin update(Admin admin, String username, String password) throws AdminException {
+				
+		CurrentUserSession loggedAdmin=sessionDAO.findByUuid(password).orElseThrow(()-> new AdminException("Please provide a valid password to update a Admin"));
+			
+		if(loggedAdmin.getUserId()==admin.getAdminId()) {
+			
+			admin.getUser().setUsername(username);
+			admin.getUser().setPassword(password);	
+		}
+		Admin updatedAdmin=admindao.save(admin);
 		
-		Admin adminPresent =admindao.findById(admin.getAdminId()).orElseThrow(()-> new AdminException("No admin with Admin Id : "+admin.getAdminId()));
+		if(updatedAdmin ==null)
+			throw new AdminException("Updation failed try again with valid entry");
+		else
+			return updatedAdmin;	
 		
-		adminPresent.getUser().setUsername(username);
-		adminPresent.getUser().setPassword(username);
 		
-		return adminPresent;
 		
 	}
 
@@ -83,9 +97,11 @@ public class AdminServiceImpl implements AdminService{
 
 	@Override
 	public List<TripBooking> getTripsDatewise() throws TripBookingException {
-		// TODO Auto-generated method stub
 		return null;
+		
 	}
+
+ 
 
 	@Override
 	public List<TripBooking> getAllTripsForDays(Integer customerId, LocalDateTime fromDate, LocalDateTime toDate)throws TripBookingException {
