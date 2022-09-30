@@ -7,6 +7,7 @@ import javax.persistence.RollbackException;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Admin;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -29,6 +30,12 @@ public class GlobalException {
 	}
 	
 
+	
+	@ExceptionHandler(LoginException.class)
+	ResponseEntity<ApplicationError>LoginExceptionHandler(LoginException ce,WebRequest wr){
+		ApplicationError error=new ApplicationError(LocalDateTime.now(),ce.getMessage(),wr.getDescription(false));
+		return new ResponseEntity<ApplicationError>(error,HttpStatus.NOT_FOUND);
+	}
 	@ExceptionHandler(TripBookingException.class)
 	ResponseEntity<ApplicationError>tripBookingExceptionHandler(TripBookingException ce,WebRequest wr){
 		ApplicationError error=new ApplicationError(LocalDateTime.now(),ce.getMessage(),wr.getDescription(false));
@@ -64,6 +71,11 @@ public class GlobalException {
 		return new ResponseEntity<ApplicationError>(error,HttpStatus.NOT_FOUND);
 	}
 	
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	ResponseEntity<ApplicationError>methodArgumentExceptionHandler(MethodArgumentNotValidException ce,WebRequest wr){
+		ApplicationError error=new ApplicationError(LocalDateTime.now(),"Validation Error ",ce.getBindingResult().getFieldError().getDefaultMessage());
+		return new ResponseEntity<ApplicationError>(error,HttpStatus.NOT_FOUND);
+	}
 	
 	
 //**********************Main-Exception handler******************************

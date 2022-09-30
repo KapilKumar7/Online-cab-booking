@@ -26,6 +26,8 @@ public class ApplicationError {
 		this.message = message;
 		this.details = details;
 	}
+
+	 
 	
 
 	
