@@ -5,38 +5,36 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cabBooking.exceptions.TripBookingException;
+import com.cabBooking.models.TripBooking;
+import com.cabBooking.repository.TripBookingDao;
+
 @Service
 public class TripBookingServiceImpl implements TripBookingService{
 
 	@Autowired
-	private TripBookingServiceDao tripDao;
+	private TripBookingDao tripDao;
 	
-	@Autowired
-	private CustomerService customerService;
-	
-	
+		
 	
 	@Override
 	public TripBooking insertTripBooking(TripBooking tripBooking) throws TripBookingException {
 		
-		tripDao.save(tripBooking);
+		TripBooking booking=tripDao.save(tripBooking);
+		
+		if(booking ==null) {
+			throw new TripBookingException("Enter proper details to start the trip");
+		}else
+			return booking;
+		
 	}
 
 	@Override
 	public TripBooking updateTripBooking(TripBooking tripBooking) throws TripBookingException {
 		
-		TripBooking trip = tripDao.findAll(tripBooking).orElseThrow(() -> new TripBookingException("TripBooking with id : "+ tripBooking + "does not exist"));
-		
-		trip.setFromLocation(tripBooking.getFromLocation());
-		trip.setToLocation(tripBooking.getToLocation());
-		trip.setFromDateTime(tripBooking.getFromDateTime());
-		trip.setToDateTime(tripBooking.getToDateTime());
-		trip.setBill(tripBooking.getBill());
-		trip.setStatus(tripBooking.getStatus());
-		trip.setDistanceInKm(tripBooking.getDistanceInKm());
-		tripDao.save(trip);
-		
-		return trip;
+		tripDao.findById(tripBooking.getTripBookingId()).orElseThrow(() -> new TripBookingException("TripBooking with id : "+ tripBooking.getTripBookingId() + "does not exist"));
+	
+		return tripDao.save(tripBooking);
 		
 	}
 
@@ -53,7 +51,7 @@ public class TripBookingServiceImpl implements TripBookingService{
 	@Override
 	public List<TripBooking> viewAllTripsCustomer(int customerld) throws TripBookingException {
 		
-		List<TripBooking> list = customerService.getList(customerld);
+		List<TripBooking> list=tripDao.getAllTripsByCustomerId(customerld);
 		
 		if(list.size()==0) throw new TripBookingException("No trip for this customer having id : "+ customerld);
 		
@@ -63,13 +61,15 @@ public class TripBookingServiceImpl implements TripBookingService{
 	@Override
 	public TripBooking calculateBill(int customerld) throws TripBookingException {
 		
-		TripBooking trip = tripDao.findById(customerld).orElseThrow(() -> new TripBookingException("TripBooking with id :" + customerld + "does not exist"));
+		TripBooking trip = tripDao.getCurrentTripByCustomerId(customerld);
+		if(trip ==null) {
+		 throw new TripBookingException("Trip Booking with id :" + customerld + "does not exist");
+		}
+		trip.setBill(trip.getDriver().getCab().getPerKmRate() *trip.getDistanceInKm());
 		
-		Double bill = trip.getBill();
+		trip.setStatus(false);
 		
-		if(bill==0) throw new TripBookingException("No trip/bill found for customerId : "+ customerld);
-		
-		return bill;
+		return tripDao.save(trip);
 	}
 	
 	

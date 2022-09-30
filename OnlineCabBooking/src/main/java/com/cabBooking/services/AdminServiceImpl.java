@@ -1,13 +1,21 @@
 package com.cabBooking.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import javax.security.auth.login.LoginException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Admin;
 import org.springframework.stereotype.Service;
+
+import com.cabBooking.exceptions.AdminException;
+import com.cabBooking.exceptions.TripBookingException;
+import com.cabBooking.repository.AdminDao;
+import com.cabBooking.repository.AdminSessionDao;
+import com.cabBooking.repository.TripBookingDao;
+import com.cabBooking.models.Admin;
+import com.cabBooking.models.TripBooking;
 
 @Service
 public class AdminServiceImpl implements AdminService{
@@ -16,98 +24,84 @@ public class AdminServiceImpl implements AdminService{
 	private AdminDao admindao;
 	
 	@Autowired
-	private AdminSessionDao adminSessionDao;
+	private TripBookingDao bookingDao;
 	
 	@Autowired
-	private TripBookingServiceDao tripDao;
-	
-	@Autowired
-	private CustomerService customerService;
-	
-	
-	
+	private TripBookingService bookingService;
+
 	@Override
 	public Admin resgisterAdmin(Admin admin) throws AdminException {
-		
-		return admindao.save(admin);
-	}
-
-	@Override
-	public Admin update(Admin admin, String Username, String password) throws AdminException {
-		
-		Admin updated = null;
-		
-		Optional<AdminSession> op = adminSessionDao.findByUuid(password);
-		
-		if(op.isEmpty()) {
-			
-			throw new LoginException("Please Login first");
-		}
-		else {
-			
-			Optional<Admin> otp = admindao.findByUsername(Username);
-			
-			if(otp.isEmpty()) {
-				
-				throw new UsernameNotFoundException("Give correct username");
-			}
-			else {
-				
-				Admin toUpdate = otp.get();
-				Integer id = toUpdate.getAdminId();
-				Admin ad = new Admin(id, admin.getUser());
-				updated = admindao.save(ad);
-			}
-		}
-	}
-
-	@Override
-	public Admin deleteAdmin(Integer AdminId) throws AdminException {
 	
-		Admin AD = admindao.findById(AdminId).orElseThrow(()-> new AdminException("Admin does not exist with Id : "+AdminId));
+		Admin adminSaved=admindao.save(admin);
 		
-		admindao.deleteAdmin(AD);
-		
-		return AD;
-		
+		if(adminSaved ==null) {
+			throw new AdminException("Either already have an account or details not filled properly");
+		}else
+			return adminSaved;
 		
 	}
 
 	@Override
-	public List<TripBookingService> getAllTrips(Integer customerId) throws TripBookingException {
+	public Admin update(Admin admin, String username, String password) throws AdminException {
 		
-		List<TripBookingService> list = customerService.getList(customerId);
+		Admin adminPresent =admindao.findById(admin.getAdminId()).orElseThrow(()-> new AdminException("No admin with Admin Id : "+admin.getAdminId()));
 		
-		if(list.size()==0) {
-			
-			throw new TripBookingException("No Trip for this customerId : "+customerId);
+		adminPresent.getUser().setUsername(username);
+		adminPresent.getUser().setPassword(username);
+		
+		return adminPresent;
+		
+	}
+
+	@Override
+	public Admin deleteAdmin(Integer adminId) throws AdminException {
+		
+		Admin admin = admindao.findById(adminId).orElseThrow(() -> new AdminException("Admin with id : " + adminId + "does not exist"));
+	
+		admindao.deleteById(adminId);
+		
+		return admin;
+	}
+
+	@Override
+	public List<TripBooking> getAllTrips(Integer customerId) throws TripBookingException {
+			 
+		return bookingService.viewAllTripsCustomer(customerId);
+	}
+
+	@Override
+	public List<TripBooking> getTripsCabwise() throws TripBookingException {
+		
+		return null;
+	}
+
+	@Override
+	public List<TripBooking> getTripsCustomerwise() throws TripBookingException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<TripBooking> getTripsDatewise() throws TripBookingException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<TripBooking> getAllTripsForDays(Integer customerId, LocalDateTime fromDate, LocalDateTime toDate)throws TripBookingException {
+		
+		List<TripBooking> bookings=	bookingDao.getAllTripBetweenDate(customerId, fromDate, toDate);
+		
+		if(bookings.size()>0) {
+			return bookings;
 		}
-		return list;
+		else
+			throw new TripBookingException("No trip booking for the customer "+customerId+ " between "+fromDate+ " and "+toDate);
 	}
-
-	@Override
-	public List<TripBookingService> getTripsCabwise() throws TripBookingException {
-		
-		
-	}
-
-	@Override
-	public List<TripBookingService> getTripsCustomerwise() throws TripBookingException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<TripBookingService> getTripsDatewise() throws TripBookingException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<TripBookingService> getAllTripsForDays(Integer customerId, LocalDateTime fromDate, LocalDateTime toDate)
-			throws TripBookingException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
+	
+	
+	
+	
 
 }
