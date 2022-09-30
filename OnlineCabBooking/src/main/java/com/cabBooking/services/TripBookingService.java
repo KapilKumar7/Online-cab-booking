@@ -2,6 +2,9 @@ package com.cabBooking.services;
 
 import java.util.List;
 
+import com.cabBooking.exceptions.TripBookingException;
+import com.cabBooking.models.TripBooking;
+
 public interface TripBookingService {
 	
 	public TripBooking insertTripBooking(TripBooking tripBooking)throws TripBookingException;
