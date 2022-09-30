@@ -1,78 +1,67 @@
 package com.cabBooking.services;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.cabBooking.exceptions.CustomerException;
+import com.cabBooking.models.Customer;
+import com.cabBooking.repository.CustomerDao;
 
 @Service
 public class CustomerServiceImpl implements CustomerService{
 
 	@Autowired
-	private CustomerDao customerDao;
-	
+	private CustomerDao cDao;
 	
 	@Override
 	public Customer resgisterAdmin(Customer customer) throws CustomerException {
 		
-		return customerDao.save(customer);
+		return cDao.save(customer);
 	}
 
 	@Override
-	public Customer updateCustomer(Customer customer) throws CustomerException {
+	public Customer updateCustomer(Customer customer, int Id) throws CustomerException {
 		
-		Customer customerDB = customerDao.findAll(customer).orElseThrow(() -> new CustomerException("Admin doesn't exist..."));
-
-		if(Objects.nonNull(customer.getUsername()) &&
-				!"".equalsIgnoreCase(customer.getUsername()))
-			customerDB.setUsername(customer.getUsername());
+		Optional<Customer> cs = cDao.findById(Id);
 		
-		if(Objects.nonNull(customer.getName()) &&
-				!"".equalsIgnoreCase(customer.getName()))
-			customerDB.setName(customer.getName);
+		if(!cs.isPresent()) throw new CustomerException("Customer does not exist with : "+Id);
 		
-		if(Objects.nonNull(customer.getPassword()) &&
-				!"".equalsIgnoreCase(customer.getPassword()))
-			customerDB.setPassword(customer.getPassword);
+		Customer c = cs.get();
 		
-		if(Objects.nonNull(customer.getEmail()) &&
-				!"".equalsIgnoreCase(customer.getEmail()))
-			customerDB.setEmail(customer.getEmail);
+		return cDao.save(c);
 		
-		if(Objects.nonNull(customer.getMobileNo()) &&
-				!"".equalsIgnoreCase(customer.getMobileNo()))
-			customerDB.setMobileNo(customer.getMobileNo);
-		
-		return customerDao.save(customerDB);
-		
-			
 	}
 
 	@Override
 	public Customer deleteCustomer(Integer customerId) throws CustomerException {
 		
-		Customer customer = customerDao.findById(customerId).orElseThrow(() -> new CustomerException("Customer doesn't exist with this Id : "+ customerId));
-		
-		customerDao.delete(customer);
-		
-		return customer;
+		Customer cs = cDao.findById(customerId).orElseThrow(() -> new CustomerException("Customer does not exist with : "+ customerId));
+		cDao.delete(cs);
+		return cs;
 	}
 
 	@Override
 	public List<Customer> viewCustomers() throws CustomerException {
+
+		List<Customer> list = cDao.findAll();
 		
-		return customerDao.findAll();
+		if(list == null)
+			throw new CustomerException("No Customers found");
+		
+		return list;
+		
 	}
 
 	@Override
 	public Customer viewCustomer(Integer customerId) throws CustomerException {
 		
-		Customer customer = customerDao.findById(customerId).orElseThrow(() -> new CustomerException("Customer doesn't exist with this Id : "+ customerId));
-		
-		return customer;
+		Customer cs = cDao.findById(customerId).orElseThrow(() -> new CustomerException("customer does not exist with this Id : "+customerId));
+		return cs;
 	}
-
+	
 	
 
 }

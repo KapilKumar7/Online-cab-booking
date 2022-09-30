@@ -5,6 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cabBooking.exceptions.TripBookingException;
+import com.cabBooking.models.TripBooking;
+
 @Service
 public class TripBookingServiceImpl implements TripBookingService{
 
