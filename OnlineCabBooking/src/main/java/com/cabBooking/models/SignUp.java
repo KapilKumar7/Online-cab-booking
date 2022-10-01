@@ -26,7 +26,7 @@ public class SignUp {
 
 
 	@NotNull
-	@Pattern(regexp="[a-z]{3,12}", message = "Username must be between 6 to 12 characters. Must only contain lowercase characters.")
+	@Pattern(regexp="[a-zA-Z0-9]{3,18}", message = "Username must be between 6 to 12 characters. Must only contain lowercase characters.")
 	private String userName;
 
 	@NotNull
