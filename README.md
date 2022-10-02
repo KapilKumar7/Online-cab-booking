@@ -22,7 +22,9 @@ On the other hand, users can register. Users can search and view the taxis avail
 Admin can maintain a database of drivers. Drivers have to register on the portal. Drivers will be able to see the booking done by users and details of users like name, source, and destination location.
 
 # Cab Booking Application ER diagram
-![cab_booking_3](https://user-images.githubusercontent.com/68966858/185020617-92914a9c-b5e2-4b3b-aa36-dc6a26454cba.jpeg)
+
+![Er-diagram](https://user-images.githubusercontent.com/100344844/193457247-6761050e-1214-4386-a224-9662c89dabee.png)
+
 
 ## Tech Stack
 
