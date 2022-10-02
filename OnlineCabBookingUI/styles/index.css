@@ -1,0 +1,23 @@
+/* body{
+    font-family: sans-serif;
+  }
+  header .carousel-inner .item{
+    height: 100vh;
+  }
+  header .carousel-inner .item img{
+    width: 100%;
+  }
+  .carousel-caption{
+    padding-bottom: 100vh;
+  }
+  .carousel-caption h2{
+    font-size: 5vh;
+    text-transform: uppercase;
+  }
+  .carousel-control.right{
+    background-image: none;
+  }
+  .carousel-control.left{
+    background-image: none;
+  }
+  .carousel { width:90%; height: auto;; } */
